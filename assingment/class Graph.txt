@@ -1,0 +1,103 @@
+class Graph:
+def __init__(self, graph, heuristic):
+self.graph = graph
+self.H=heuristic
+self.status={}
+self.solution_graph={}
+self.cost={}
+
+def get_neighbours(self, v):
+return self.graph.get(v, [])
+
+def h(self, n):
+return self.H.get(n, 0)
+
+def ao_star(self, node):
+if node not in self.graph or not self.graph[node]:
+return self.h(node)#leaf node 
+
+
+#check if already solved 
+if self.status.get(node, 0) == -I;
+return self.cost[node]
+
+min_cost=float("inf")
+best_child=None
+
+for child_set in self.graph[node]:
+cost=0
+for child in child_set:
+cost+=self.h(child)
+if cost < min_cost:
+min_cost=cost
+best_child=child_set
+
+self.cost[node]=min_cost
+self.solution_graph[node]=best_child
+self.status[node]=-1
+
+for child in best_child:
+self.ao_star(child)
+return self.cost[node]
+
+def print_solution(self, start):
+print ("solution path")
+self._print_path(start)
+
+def _print_path(self, node):
+if node not in self.solution_graph:
+print(node, end=" ")
+return
+print(node, "->", end=" ")
+for child in slef.solution_graph[node]:
+self._print_path(child)
+
+
+
+
+graph={
+'A':[['B','C'],['D']],
+'B':[['E'],['F']],
+'C':[['G']],
+'D':[['H','I'],
+'E':[],'F'[],'G'[],'H'[],'I'[],
+}
+
+#HEUTISTIC VALUES (ESTIMATED COST TO GOALS)
+
+H={
+'A':10,'B':6,'C':5,
+'E':2,'F':3,'G':1,'H':2,'I':4
+}
+
+ao=Graph(graph, H)
+cost=ao.ao_star('A')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
