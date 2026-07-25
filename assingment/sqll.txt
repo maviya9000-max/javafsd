@@ -1,103 +1,92 @@
-CREATE TABLE students (
-    ->     student_id INT PRIMARY KEY,
-    ->     name VARCHAR(50),
-    ->     course_id INT,
-    ->     city VARCHAR(30)
-    -> );
-ERROR 1050 (42S01): Table 'students' already exists
-mysql>
 mysql> CREATE TABLE courses (
     ->     course_id INT PRIMARY KEY,
     ->     course_name VARCHAR(50)
     -> );
 ERROR 1050 (42S01): Table 'courses' already exists
-mysql>
+
 mysql> CREATE TABLE tasks (
     ->     task_id INT PRIMARY KEY,
     ->     student_id INT,
     ->     task_name VARCHAR(50)
     -> );
 ERROR 1050 (42S01): Table 'tasks' already exists
-mysql>
+
 mysql> CREATE TABLE teachers (
     ->     teacher_id INT PRIMARY KEY,
     ->     name VARCHAR(50),
     ->     city VARCHAR(30)
     -> );
 ERROR 1050 (42S01): Table 'teachers' already exists
-mysql>
+
 mysql> INSERT INTO students VALUES
-    -> (1,'Rahul',101,'Hyderabad'),
-    -> (2,'Priya',102,'Bengaluru'),
-    -> (3,'Arjun',103,'Hyderabad'),
-    -> (4,'Sneha',104,'Mumbai');
+    -> (1,'Aman',101,'Pune'),
+    -> (2,'Neha',102,'Jaipur'),
+    -> (3,'Rohan',103,'Pune'),
+    -> (4,'Kavya',104,'Surat');
 ERROR 1062 (23000): Duplicate entry '1' for key 'students.PRIMARY'
-mysql>
+
 mysql> INSERT INTO courses VALUES
-    -> (101,'Java'),
-    -> (102,'Python'),
-    -> (103,'DBMS'),
-    -> (105,'Artificial Intelligence');
+    -> (101,'C Programming'),
+    -> (102,'Web Development'),
+    -> (103,'Operating Systems'),
+    -> (105,'Machine Learning');
 ERROR 1062 (23000): Duplicate entry '101' for key 'courses.PRIMARY'
-mysql>
+
 mysql> INSERT INTO tasks VALUES
-    -> (1,1,'Assignment 1'),
-    -> (2,1,'Assignment 2'),
-    -> (3,2,'Project'),
-    -> (4,3,'Seminar');
+    -> (1,1,'Lab Exercise'),
+    -> (2,1,'Mini Project'),
+    -> (3,2,'Presentation'),
+    -> (4,3,'Case Study');
 ERROR 1062 (23000): Duplicate entry '1' for key 'tasks.PRIMARY'
-mysql>
+
 mysql> INSERT INTO teachers VALUES
-    -> (1,'Ramesh','Hyderabad'),
-    -> (2,'Sita','Chennai'),
-    -> (3,'Anil','Mumbai'),
-    -> (4,'Kiran','Delhi');
+    -> (1,'Meena','Pune'),
+    -> (2,'Suresh','Lucknow'),
+    -> (3,'Deepak','Surat'),
+    -> (4,'Anita','Kolkata');
 ERROR 1062 (23000): Duplicate entry '1' for key 'teachers.PRIMARY'
-mysql>
+
 mysql> SELECT s.name, c.course_name
     -> FROM students s
     -> INNER JOIN courses c
     -> ON s.course_id = c.course_id;
-+-------+-------------+
-| name  | course_name |
-+-------+-------------+
-| Rahul | Java        |
-| Priya | Python      |
-| Arjun | DBMS        |
-+-------+-------------+
++-------+-------------------+
+| name  | course_name       |
++-------+-------------------+
+| Aman  | C Programming     |
+| Neha  | Web Development   |
+| Rohan | Operating Systems |
++-------+-------------------+
 3 rows in set (0.00 sec)
 
-mysql>
 mysql> SELECT s.name, c.course_name
     -> FROM students s
     -> LEFT JOIN courses c
     -> ON s.course_id = c.course_id;
-+-------+-------------+
-| name  | course_name |
-+-------+-------------+
-| Rahul | Java        |
-| Priya | Python      |
-| Arjun | DBMS        |
-| Sneha | NULL        |
-+-------+-------------+
++-------+-------------------+
+| name  | course_name       |
++-------+-------------------+
+| Aman  | C Programming     |
+| Neha  | Web Development   |
+| Rohan | Operating Systems |
+| Kavya | NULL              |
++-------+-------------------+
 4 rows in set (0.00 sec)
 
-mysql>
 mysql> SELECT s.name, c.course_name
     -> FROM students s
     -> RIGHT JOIN courses c
     -> ON s.course_id = c.course_id;
-+-------+-------------+
-| name  | course_name |
-+-------+-------------+
-| Rahul | Java        |
-| Priya | Python      |
-| Arjun | DBMS        |
-| NULL  | AI          |
-+-------+-------------+
++-------+-------------------+
+| name  | course_name       |
++-------+-------------------+
+| Aman  | C Programming     |
+| Neha  | Web Development   |
+| Rohan | Operating Systems |
+| NULL  | Machine Learning  |
++-------+-------------------+
 4 rows in set (0.00 sec)
 
-mysql>
 mysql> SELECT s.name, COUNT(t.task_id) AS total_tasks
     -> FROM students s
     -> INNER JOIN tasks t
@@ -106,13 +95,12 @@ mysql> SELECT s.name, COUNT(t.task_id) AS total_tasks
 +-------+-------------+
 | name  | total_tasks |
 +-------+-------------+
-| Rahul |           2 |
-| Priya |           1 |
-| Arjun |           1 |
+| Aman  |           2 |
+| Neha  |           1 |
+| Rohan |           1 |
 +-------+-------------+
 3 rows in set (0.00 sec)
 
-mysql>
 mysql> SELECT s.name, COUNT(t.task_id) AS total_tasks
     -> FROM students s
     -> LEFT JOIN tasks t
@@ -121,59 +109,61 @@ mysql> SELECT s.name, COUNT(t.task_id) AS total_tasks
 +-------+-------------+
 | name  | total_tasks |
 +-------+-------------+
-| Rahul |           2 |
-| Priya |           1 |
-| Arjun |           1 |
-| Sneha |           0 |
+| Aman  |           2 |
+| Neha  |           1 |
+| Rohan |           1 |
+| Kavya |           0 |
 +-------+-------------+
 4 rows in set (0.00 sec)
 
-mysql>
 mysql> SELECT city FROM students
     -> UNION
     -> SELECT city FROM teachers;
-+------------+
-| city       |
-+------------+
-| Hyderabad  |
-| Vijayawada |
-| Guntur     |
-| Chennai    |
-| Bangalore  |
-+------------+
++----------+
+| city     |
++----------+
+| Pune     |
+| Jaipur   |
+| Surat    |
+| Lucknow  |
+| Kolkata  |
++----------+
 5 rows in set (0.00 sec)
 
-mysql>
 mysql> SELECT city FROM students
     -> UNION ALL
     -> SELECT city FROM teachers;
-+------------+
-| city       |
-+------------+
-| Hyderabad  |
-| Vijayawada |
-| Hyderabad  |
-| Guntur     |
-| Hyderabad  |
-| Chennai    |
-| Guntur     |
-| Bangalore  |
-+------------+
++----------+
+| city     |
++----------+
+| Pune     |
+| Jaipur   |
+| Pune     |
+| Surat    |
+| Pune     |
+| Lucknow  |
+| Surat    |
+| Kolkata  |
++----------+
 8 rows in set (0.00 sec)
 
-mysql>
 mysql> SELECT city FROM students
     -> INTERSECT
     -> SELECT city FROM teachers;
-+-----------+
-| city      |
-+-----------+
-| Hyderabad |
-| Guntur    |
-+-----------+
++-------+
+| city  |
++-------+
+| Pune  |
+| Surat |
++-------+
 2 rows in set (0.00 sec)
 
-mysql>
 mysql> SELECT city FROM students
     -> EXCEPT
     -> SELECT city FROM teachers;
++--------+
+| city   |
++--------+
+| Jaipur |
++--------+
+1 row in set (0.00 sec)
