@@ -1,0 +1,579 @@
+mysql> CREATE DATABASE college_db;
+ERROR 1007 (HY000): Can't create database 'college_db'; database exists
+mysql>
+mysql> USE college_db;
+Database changed
+mysql>
+mysql> DROP TABLE IF EXISTS students;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql>
+mysql> CREATE TABLE students(
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100) NOT NULL,
+    ->     email VARCHAR(100) UNIQUE NOT NULL,
+    ->     phone VARCHAR(15),
+    ->     date_of_birth DATE,
+    ->     is_active BOOLEAN DEFAULT TRUE,
+    ->     marks DECIMAL(5,2) CHECK (marks >= 0 AND marks <= 100),
+    ->     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql>
+mysql> SHOW TABLES;
++----------------------+
+| Tables_in_college_db |
++----------------------+
+| students             |
++----------------------+
+1 row in set (0.01 sec)
+
+mysql>
+mysql> DESCRIBE students;
++---------------+--------------+------+-----+-------------------+-------------------+
+| Field         | Type         | Null | Key | Default           | Extra             |
++---------------+--------------+------+-----+-------------------+-------------------+
+| id            | int          | NO   | PRI | NULL              | auto_increment    |
+| name          | varchar(100) | NO   |     | NULL              |                   |
+| email         | varchar(100) | NO   | UNI | NULL              |                   |
+| phone         | varchar(15)  | YES  |     | NULL              |                   |
+| date_of_birth | date         | YES  |     | NULL              |                   |
+| is_active     | tinyint(1)   | YES  |     | 1                 |                   |
+| marks         | decimal(5,2) | YES  |     | NULL              |                   |
+| created_at    | timestamp    | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++---------------+--------------+------+-----+-------------------+-------------------+
+8 rows in set (0.01 sec)
+
+mysql>
+mysql> INSERT INTO students(name,email,phone,date_of_birth,marks)
+    -> VALUES
+    -> ('Rahul','rahul@gmail.com','9876543210','2004-05-10',91.50);
+Query OK, 1 row affected (0.00 sec)
+
+mysql>
+mysql> INSERT INTO students(name,email,phone,date_of_birth,marks)
+    -> VALUES
+    -> ('Priya','priya@gmail.com','9876543211','2003-08-15',88.25);
+Query OK, 1 row affected (0.00 sec)
+
+mysql>
+mysql> INSERT INTO students(name,email,phone,date_of_birth,marks)
+    -> VALUES
+    -> ('Arjun','arjun@gmail.com','9876543212','2002-12-05',76.75);
+Query OK, 1 row affected (0.00 sec)
+
+mysql>
+mysql> SELECT * FROM students;
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+| id | name  | email           | phone      | date_of_birth | is_active | marks | created_at          |
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+|  1 | Rahul | rahul@gmail.com | 9876543210 | 2004-05-10    |         1 | 91.50 | 2026-07-26 18:59:27 |
+|  2 | Priya | priya@gmail.com | 9876543211 | 2003-08-15    |         1 | 88.25 | 2026-07-26 18:59:27 |
+|  3 | Arjun | arjun@gmail.com | 9876543212 | 2002-12-05    |         1 | 76.75 | 2026-07-26 18:59:27 |
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT name, marks
+    -> FROM students;
++-------+-------+
+| name  | marks |
++-------+-------+
+| Rahul | 91.50 |
+| Priya | 88.25 |
+| Arjun | 76.75 |
++-------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> UPDATE students
+    -> SET marks = 95.50
+    -> WHERE id = 1;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql>
+mysql> SELECT * FROM students;
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+| id | name  | email           | phone      | date_of_birth | is_active | marks | created_at          |
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+|  1 | Rahul | rahul@gmail.com | 9876543210 | 2004-05-10    |         1 | 95.50 | 2026-07-26 18:59:27 |
+|  2 | Priya | priya@gmail.com | 9876543211 | 2003-08-15    |         1 | 88.25 | 2026-07-26 18:59:27 |
+|  3 | Arjun | arjun@gmail.com | 9876543212 | 2002-12-05    |         1 | 76.75 | 2026-07-26 18:59:27 |
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> DELETE FROM students
+    -> WHERE id = 3;
+Query OK, 1 row affected (0.00 sec)
+
+mysql>
+mysql> SELECT * FROM students;
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+| id | name  | email           | phone      | date_of_birth | is_active | marks | created_at          |
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+|  1 | Rahul | rahul@gmail.com | 9876543210 | 2004-05-10    |         1 | 95.50 | 2026-07-26 18:59:27 |
+|  2 | Priya | priya@gmail.com | 9876543211 | 2003-08-15    |         1 | 88.25 | 2026-07-26 18:59:27 |
++----+-------+-----------------+------------+---------------+-----------+-------+---------------------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql> CREATE TABLE tasks(
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     title VARCHAR(200) NOT NULL,
+    ->     description TEXT,
+    ->     priority ENUM('LOW','MEDIUM','HIGH') DEFAULT 'MEDIUM',
+    ->     status ENUM('PENDING','IN_PROGRESS','COMPLETED','CANCELLED') DEFAULT 'PENDING',
+    ->     due_date DATE,
+    ->     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ->     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ->     is_archived BOOLEAN DEFAULT FALSE,
+    ->     assignee VARCHAR(100),
+    ->     estimated_hours DECIMAL(5,2),
+    ->     actual_hours DECIMAL(5,2)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> SHOW TABLES;
++----------------------+
+| Tables_in_college_db |
++----------------------+
+| students             |
+| tasks                |
++----------------------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql> DESCRIBE tasks;
++-----------------+-------------------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+| Field           | Type                                                  | Null | Key | Default           | Extra                                         |
++-----------------+-------------------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+| id              | int                                                   | NO   | PRI | NULL              | auto_increment                                |
+| title           | varchar(200)                                          | NO   |     | NULL              |                                               |
+| description     | text                                                  | YES  |     | NULL              |                                               |
+| priority        | enum('LOW','MEDIUM','HIGH')                           | YES  |     | MEDIUM            |                                               |
+| status          | enum('PENDING','IN_PROGRESS','COMPLETED','CANCELLED') | YES  |     | PENDING           |                                               |
+| due_date        | date                                                  | YES  |     | NULL              |                                               |
+| created_at      | timestamp                                             | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
+| updated_at      | timestamp                                             | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
+| is_archived     | tinyint(1)                                            | YES  |     | 0                 |                                               |
+| assignee        | varchar(100)                                          | YES  |     | NULL              |                                               |
+| estimated_hours | decimal(5,2)                                          | YES  |     | NULL              |                                               |
+| actual_hours    | decimal(5,2)                                          | YES  |     | NULL              |                                               |
++-----------------+-------------------------------------------------------+------+-----+-------------------+-----------------------------------------------+
+12 rows in set (0.00 sec)
+
+mysql>
+mysql> INSERT INTO tasks(title,description,priority,assignee,estimated_hours)
+    -> VALUES(
+    -> 'Complete SQL Assignment',
+    -> 'Practice all SQL commands',
+    -> 'HIGH',
+    -> 'Rahul',
+    -> 4.50
+    -> );
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> SELECT * FROM tasks;
++----+-------------------------+---------------------------+----------+---------+----------+---------------------+---------------------+-------------+----------+-----------------+--------------+
+| id | title                   | description               | priority | status  | due_date | created_at          | updated_at          | is_archived | assignee | estimated_hours | actual_hours |
++----+-------------------------+---------------------------+----------+---------+----------+---------------------+---------------------+-------------+----------+-----------------+--------------+
+|  1 | Complete SQL Assignment | Practice all SQL commands | HIGH     | PENDING | NULL     | 2026-07-26 18:59:27 | 2026-07-26 18:59:27 |           0 | Rahul    |            4.50 |         NULL |
++----+-------------------------+---------------------------+----------+---------+----------+---------------------+---------------------+-------------+----------+-----------------+--------------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql> DROP TABLE IF EXISTS tasks;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> DROP TABLE IF EXISTS students;
+Query OK, 0 rows affected (0.04 sec)
+
+
+
+mysql> CREATE DATABASE college;
+Query OK, 1 row affected (0.02 sec)
+
+mysql>
+mysql> USE college;
+Database changed
+mysql>
+mysql> CREATE TABLE students (
+    ->     id INT PRIMARY KEY,
+    ->     name VARCHAR(50),
+    ->     age INT,
+    ->     marks INT
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> DESC students;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| id    | int         | NO   | PRI | NULL    |       |
+| name  | varchar(50) | YES  |     | NULL    |       |
+| age   | int         | YES  |     | NULL    |       |
+| marks | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> INSERT INTO students VALUES
+    -> (1, 'Rahul', 20, 85),
+    -> (2, 'Priya', 19, 90),
+    -> (3, 'Kiran', 21, 78);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> SELECT * FROM students;
++----+-------+------+-------+
+| id | name  | age  | marks |
++----+-------+------+-------+
+|  1 | Rahul |   20 |    85 |
+|  2 | Priya |   19 |    90 |
+|  3 | Kiran |   21 |    78 |
++----+-------+------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT name AS 'StudentName', age AS 'StudentAge'
+    -> FROM students;
++-------------+------------+
+| StudentName | StudentAge |
++-------------+------------+
+| Rahul       |         20 |
+| Priya       |         19 |
+| Kiran       |         21 |
++-------------+------------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT DISTINCT age
+    -> FROM students;
++------+
+| age  |
++------+
+|   20 |
+|   19 |
+|   21 |
++------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT *
+    -> FROM students
+    -> LIMIT 5;
++----+-------+------+-------+
+| id | name  | age  | marks |
++----+-------+------+-------+
+|  1 | Rahul |   20 |    85 |
+|  2 | Priya |   19 |    90 |
+|  3 | Kiran |   21 |    78 |
++----+-------+------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT *
+    -> FROM students
+    -> LIMIT 5 OFFSET 5;
+Empty set (0.00 sec)
+
+mysql>
+mysql> SELECT *
+    -> FROM students
+    -> ORDER BY age DESC
+    -> LIMIT 1 OFFSET 1;
++----+-------+------+-------+
+| id | name  | age  | marks |
++----+-------+------+-------+
+|  1 | Rahul |   20 |    85 |
++----+-------+------+-------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql> UPDATE students
+    -> SET age = 21
+    -> WHERE id = 2;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql>
+mysql> UPDATE students
+    -> SET age = age + 5
+    -> WHERE age < 20;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql>
+mysql> SELECT * FROM students;
++----+-------+------+-------+
+| id | name  | age  | marks |
++----+-------+------+-------+
+|  1 | Rahul |   20 |    85 |
+|  2 | Priya |   21 |    90 |
+|  3 | Kiran |   21 |    78 |
++----+-------+------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> DELETE FROM students
+    -> WHERE id = 10;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+mysql> DELETE FROM students
+    -> WHERE age < 20;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+mysql> SELECT * FROM students;
++----+-------+------+-------+
+| id | name  | age  | marks |
++----+-------+------+-------+
+|  1 | Rahul |   20 |    85 |
+|  2 | Priya |   21 |    90 |
+|  3 | Kiran |   21 |    78 |
++----+-------+------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> DELETE FROM students;
+Query OK, 3 rows affected (0.00 sec)
+
+mysql>
+mysql> INSERT INTO students VALUES
+    -> (1, 'Rahul', 20, 85),
+    -> (2, 'Priya', 19, 90),
+    -> (3, 'Kiran', 21, 78);
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> TRUNCATE TABLE students;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> DROP TABLE students;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> SELECT * FROM student;
+ERROR 1146 (42S02): Table 'college.student' doesn't exist
+mysql>
+mysql> SELECT fullname FROM students;
+ERROR 1146 (42S02): Table 'college.students' doesn't exist
+mysql>
+mysql> INSERT INTO students VALUES
+    -> (1, 'Ravi', 22, 88);
+ERROR 1146 (42S02): Table 'college.students' doesn't exist
+mysql>
+mysql> INSERT INTO students (id, name)
+    -> VALUES (4);
+ERROR 1146 (42S02): Table 'college.students' doesn't exist
+mysql>
+mysql> UPDATE students
+    -> age = 25
+    -> WHERE id = 1;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '= 25
+WHERE id = 1' at line 2
+mysql>
+mysql> UPDATE students
+    -> SET age = 25
+    -> WHERE id = 1;
+ERROR 1146 (42S02): Table 'college.students' doesn't exist
+mysql>
+mysql> TRUNCTE TABLE students;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TRUNCTE TABLE students' at line 1
+mysql>
+mysql> TRUNCATE TABLE students;
+ERROR 1146 (42S02): Table 'college.students' doesn't exist
+
+
+
+mysql> CREATE TABLE students (
+    ->     student_id INT PRIMARY KEY,
+    ->     name VARCHAR(50),
+    ->     course_id INT,
+    ->     city VARCHAR(30)
+    -> );
+ERROR 1050 (42S01): Table 'students' already exists
+mysql>
+mysql> CREATE TABLE courses (
+    ->     course_id INT PRIMARY KEY,
+    ->     course_name VARCHAR(50)
+    -> );
+ERROR 1050 (42S01): Table 'courses' already exists
+mysql>
+mysql> CREATE TABLE tasks (
+    ->     task_id INT PRIMARY KEY,
+    ->     student_id INT,
+    ->     task_name VARCHAR(50)
+    -> );
+ERROR 1050 (42S01): Table 'tasks' already exists
+mysql>
+mysql> CREATE TABLE teachers (
+    ->     teacher_id INT PRIMARY KEY,
+    ->     name VARCHAR(50),
+    ->     city VARCHAR(30)
+    -> );
+ERROR 1050 (42S01): Table 'teachers' already exists
+mysql>
+mysql> INSERT INTO students VALUES
+    -> (1,'Rahul',101,'Hyderabad'),
+    -> (2,'Priya',102,'Bengaluru'),
+    -> (3,'Arjun',103,'Hyderabad'),
+    -> (4,'Sneha',104,'Mumbai');
+ERROR 1062 (23000): Duplicate entry '1' for key 'students.PRIMARY'
+mysql>
+mysql> INSERT INTO courses VALUES
+    -> (101,'Java'),
+    -> (102,'Python'),
+    -> (103,'DBMS'),
+    -> (105,'Artificial Intelligence');
+ERROR 1062 (23000): Duplicate entry '101' for key 'courses.PRIMARY'
+mysql>
+mysql> INSERT INTO tasks VALUES
+    -> (1,1,'Assignment 1'),
+    -> (2,1,'Assignment 2'),
+    -> (3,2,'Project'),
+    -> (4,3,'Seminar');
+ERROR 1062 (23000): Duplicate entry '1' for key 'tasks.PRIMARY'
+mysql>
+mysql> INSERT INTO teachers VALUES
+    -> (1,'Ramesh','Hyderabad'),
+    -> (2,'Sita','Chennai'),
+    -> (3,'Anil','Mumbai'),
+    -> (4,'Kiran','Delhi');
+ERROR 1062 (23000): Duplicate entry '1' for key 'teachers.PRIMARY'
+mysql>
+mysql> SELECT s.name, c.course_name
+    -> FROM students s
+    -> INNER JOIN courses c
+    -> ON s.course_id = c.course_id;
++-------+-------------+
+| name  | course_name |
++-------+-------------+
+| Rahul | Java        |
+| Priya | Python      |
+| Arjun | DBMS        |
++-------+-------------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT s.name, c.course_name
+    -> FROM students s
+    -> LEFT JOIN courses c
+    -> ON s.course_id = c.course_id;
++-------+-------------+
+| name  | course_name |
++-------+-------------+
+| Rahul | Java        |
+| Priya | Python      |
+| Arjun | DBMS        |
+| Sneha | NULL        |
++-------+-------------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT s.name, c.course_name
+    -> FROM students s
+    -> RIGHT JOIN courses c
+    -> ON s.course_id = c.course_id;
++-------+-------------+
+| name  | course_name |
++-------+-------------+
+| Rahul | Java        |
+| Priya | Python      |
+| Arjun | DBMS        |
+| NULL  | AI          |
++-------+-------------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT s.name, COUNT(t.task_id) AS total_tasks
+    -> FROM students s
+    -> INNER JOIN tasks t
+    -> ON s.student_id = t.student_id
+    -> GROUP BY s.name;
++-------+-------------+
+| name  | total_tasks |
++-------+-------------+
+| Rahul |           2 |
+| Priya |           1 |
+| Arjun |           1 |
++-------+-------------+
+3 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT s.name, COUNT(t.task_id) AS total_tasks
+    -> FROM students s
+    -> LEFT JOIN tasks t
+    -> ON s.student_id = t.student_id
+    -> GROUP BY s.name;
++-------+-------------+
+| name  | total_tasks |
++-------+-------------+
+| Rahul |           2 |
+| Priya |           1 |
+| Arjun |           1 |
+| Sneha |           0 |
++-------+-------------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT city FROM students
+    -> UNION
+    -> SELECT city FROM teachers;
++------------+
+| city       |
++------------+
+| Hyderabad  |
+| Vijayawada |
+| Guntur     |
+| Chennai    |
+| Bangalore  |
++------------+
+5 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT city FROM students
+    -> UNION ALL
+    -> SELECT city FROM teachers;
++------------+
+| city       |
++------------+
+| Hyderabad  |
+| Vijayawada |
+| Hyderabad  |
+| Guntur     |
+| Hyderabad  |
+| Chennai    |
+| Guntur     |
+| Bangalore  |
++------------+
+8 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT city FROM students
+    -> INTERSECT
+    -> SELECT city FROM teachers;
++-----------+
+| city      |
++-----------+
+| Hyderabad |
+| Guntur    |
++-----------+
+2 rows in set (0.00 sec)
+
+mysql>
+mysql> SELECT city FROM students
+    -> EXCEPT
+    -> SELECT city FROM teachers;
+
